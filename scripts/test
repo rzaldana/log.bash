@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+image_tags_file="${repo_root}/.image_tags"
+
+while IFS= read -r image_tag; do
+  echo "========== running tests in image $image_tag =========="
+  docker run \
+    --rm \
+    --tty \
+    --volume "$repo_root":/var/task \
+    --entrypoint bash_unit \
+    "$image_tag" \
+    "test/test_blog.bash"
+done < "$image_tags_file"
