@@ -97,6 +97,20 @@ test_filter_sets_log_level_to_2_if_log_level_is_unset() {
   assert_no_diff "$tmpfile" <(echo "$message")
 }
 
+test_format_runs_raw_format_function_if_format_fn_is_unset() {
+  set -euo pipefail
+  source "$SCRIPT_DIR/../blog.bash"
+  local message="my message"
+  # Create tmpfile to store output
+  tmpfile="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm $tmpfile" EXIT
+
+  __blog.format "3" <<<"$message" >"$tmpfile"
+
+  assert_no_diff "$tmpfile" <(echo "$message")
+}
+
 test_format_runs_configured_format_function() {
   set -euo pipefail
   source "$SCRIPT_DIR/../blog.bash"
