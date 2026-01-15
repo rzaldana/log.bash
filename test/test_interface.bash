@@ -371,6 +371,45 @@ test_log_functions_use_default_level_if_no_level_is_configured() {
 
 }
 
+
+test_log_functions_use_default_destination_fd_if_no_destination_fd_is_configured() {
+  set -euo pipefail
+  source ../blog.bash
+
+  tmpfile="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm '$tmpfile'" EXIT
+
+  # shellcheck disable=SC2317
+  __blog.defaults.destination_fd() {
+    echo "4" 
+  }
+
+  blog.set_format_raw
+  blog.set_level_debug
+
+  blog.debug <<<"hello!" 4>"$tmpfile"
+  assert_no_diff "$tmpfile" <( echo "hello!")
+  : > "$tmpfile" # clear file contents
+
+  blog.info <<<"hello!" 4>"$tmpfile"
+  assert_no_diff "$tmpfile" <( echo "hello!")
+  : > "$tmpfile" # clear file contents
+
+  blog.warn <<<"hello!" 4>"$tmpfile"
+  assert_no_diff "$tmpfile" <( echo "hello!")
+  : > "$tmpfile" # clear file contents
+
+  blog.error <<<"hello!" 4>"$tmpfile"
+  assert_no_diff "$tmpfile" <( echo "hello!")
+  : > "$tmpfile" # clear file contents
+
+  blog.fatal <<<"hello!" 4>"$tmpfile"
+  assert_no_diff "$tmpfile" <( echo "hello!")
+  : > "$tmpfile" # clear file contents
+
+}
+
 test_set_format_bracketed_sets_bracketed_format_fn() {
   set -euo pipefail
   source ../blog.bash

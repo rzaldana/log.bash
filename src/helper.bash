@@ -63,3 +63,11 @@ __blog.helper.is_level_set() {
     return 1
   fi
 }
+
+__blog.helper.is_destination_fd_set() {
+  if [[ -n "${__BLOG_DESTINATION_FD:-}" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}

@@ -18,7 +18,7 @@ __blog.get_default_destination_fd() {
   echo "2"
 }
 
-blog.set_destination_fd() {
+__blog.set_destination_fd() {
   __BLOG_DESTINATION_FD="$1"
   export __BLOG_DESTINATION_FD
 }

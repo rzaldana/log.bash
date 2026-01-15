@@ -15,6 +15,10 @@ __blog.interface.log() {
     __blog.set_level "$(__blog.defaults.level)"
   fi
 
+  if ! __blog.helper.is_destination_fd_set; then
+    __blog.set_destination_fd "$(__blog.defaults.destination_fd)"
+  fi
+
   local log_level_name
   log_level_name="$1"
   local log_level_int

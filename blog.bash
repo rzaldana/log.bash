@@ -22,7 +22,7 @@ __blog.get_default_destination_fd() {
   echo "2"
 }
 
-blog.set_destination_fd() {
+__blog.set_destination_fd() {
   __BLOG_DESTINATION_FD="$1"
   export __BLOG_DESTINATION_FD
 }
@@ -192,6 +192,14 @@ __blog.helper.is_level_set() {
     return 1
   fi
 }
+
+__blog.helper.is_destination_fd_set() {
+  if [[ -n "${__BLOG_DESTINATION_FD:-}" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
 ########## END library helper.bash ###########
 
 
@@ -203,7 +211,11 @@ __blog.defaults.format_fn() {
 }
 
 __blog.defaults.level() {
-  echo "2"
+  echo "2" # warn
+}
+
+__blog.defaults.destination_fd() {
+  echo "2" # stderr
 }
 ########## END library defaults.bash ###########
 
@@ -216,6 +228,10 @@ __blog.interface.log() {
 
   if ! __blog.helper.is_level_set; then
     __blog.set_level "$(__blog.defaults.level)"
+  fi
+
+  if ! __blog.helper.is_destination_fd_set; then
+    __blog.set_destination_fd "$(__blog.defaults.destination_fd)"
   fi
 
   local log_level_name

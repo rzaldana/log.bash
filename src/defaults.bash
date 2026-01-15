@@ -5,5 +5,9 @@ __blog.defaults.format_fn() {
 }
 
 __blog.defaults.level() {
-  echo "2"
+  echo "2" # warn
+}
+
+__blog.defaults.destination_fd() {
+  echo "2" # stderr
 }
