@@ -12,5 +12,5 @@ while IFS= read -r image_tag; do
     --volume "$repo_root":/var/task \
     --entrypoint bash_unit \
     "$image_tag" \
-    "test/test_core.bash" "test/test_interface.bash"
+    "test/test_interface.bash" "test/test_filter.bash" "test/test_log.bash" "test/test_format.bash"
 done < "$image_tags_file"

@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 
-source core.bash
+source format.bash
+source filter.bash
+source write.bash
+source log.bash
 source format_fn.bash
 source helper.bash
 source defaults.bash
 
 
 __blog.interface.log() {
-  if ! __blog.helper.is_format_fn_set; then
-    __blog.set_format_function "$(__blog.defaults.format_fn)"
+  if ! __blog.format.is_format_fn_set; then
+    __blog.format.set_format_function "$(__blog.defaults.format_fn)"
   fi
 
-  if ! __blog.helper.is_level_set; then
-    __blog.set_level "$(__blog.defaults.level)"
+  if ! __blog.filter.is_level_set; then
+    __blog.filter.set_level "$(__blog.defaults.level)"
   fi
 
-  if ! __blog.helper.is_destination_fd_set; then
-    __blog.set_destination_fd "$(__blog.defaults.destination_fd)"
+  if ! __blog.write.is_destination_fd_set; then
+    __blog.write.set_destination_fd "$(__blog.defaults.destination_fd)"
   fi
 
   local log_level_name
@@ -31,7 +34,7 @@ __blog.interface.set_level() {
   log_level_name="$1"
   local log_level_int
   log_level_int="$(__blog.helper.get_log_level_int "$log_level_name")"
-  __blog.set_level "$log_level_int"
+  __blog.filter.set_level "$log_level_int"
 }
 
 blog.set_level_debug() {
@@ -85,13 +88,13 @@ blog.set_level_off() {
   done 
 
   # set the log level to maxint
-  __blog.set_level "$maxint"
+  __blog.filter.set_level "$maxint"
 }
 
 blog.set_format_raw() {
-  __blog.set_format_function "__blog.format_fn.raw"
+  __blog.format.set_format_function "__blog.format_fn.raw"
 }
 
 blog.set_format_bracketed() {
-  __blog.set_format_function "__blog.format_fn.bracketed"
+  __blog.format.set_format_function "__blog.format_fn.bracketed"
 }

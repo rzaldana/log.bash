@@ -1,47 +1,50 @@
 #!/usr/bin/env bash
 
 
-########## START library core.bash ###########
-__blog.get_default_log_level() {
-  echo "2"
+########## START library format.bash ###########
+__blog.format.is_format_fn_set() {
+  if [[ -n "${__BLOG_FORMAT_FORMAT_FUNCTION:-}" ]]; then
+    return 0
+  else
+    return 1
+  fi
 }
 
-__blog.set_format_function() {
-  export __BLOG_FORMAT_FUNCTION="$1"
+__blog.format.set_format_function() {
+  export __BLOG_FORMAT_FORMAT_FUNCTION="$1"
 }
 
-__blog.get_default_format_function() {
-  echo "__blog.format_fn.raw"
-}
+__blog.format.format() {
+  format_function="${__BLOG_FORMAT_FORMAT_FUNCTION}"
 
-__blog.set_level() {
-  export __BLOG_LEVEL="$1"
-}
-
-__blog.get_default_destination_fd() {
-  echo "2"
-}
-
-__blog.set_destination_fd() {
-  __BLOG_DESTINATION_FD="$1"
-  export __BLOG_DESTINATION_FD
-}
-
-__blog.write() {
-  local default_destination_fd
-  default_destination_fd="$(__blog.get_default_destination_fd)"
-  local destination_fd
-  destination_fd="${__BLOG_DESTINATION_FD:-$default_destination_fd}"
-  while IFS= read -r log_line; do
-    echo "$log_line" >&"$destination_fd"
+  local message_log_level
+  message_log_level="$1"
+  
+  while read -r log_line; do
+    "$format_function" "$message_log_level" <<<"$log_line"
   done
 }
+########## END library format.bash ###########
 
-__blog.filter() {
-  local default_log_level
-  default_log_level="$(__blog.get_default_log_level)"
+
+########## START library filter.bash ###########
+__blog.filter.is_level_set() {
+  if [[ -n "${__BLOG_FILTER_LEVEL:-}" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+__blog.filter.set_level() {
+  local level
+  level="$1"
+  export __BLOG_FILTER_LEVEL="$level"
+}
+
+__blog.filter.filter() {
   local set_log_level
-  set_log_level="${__BLOG_LEVEL:-$default_log_level}"
+  set_log_level="${__BLOG_FILTER_LEVEL}"
   
   local message_log_level
   message_log_level="$1"
@@ -52,33 +55,51 @@ __blog.filter() {
     fi
   done
 }
+########## END library filter.bash ###########
 
-__blog.format() {
-  local default_format_function
-  default_format_function="$(__blog.get_default_format_function)"
-  local format_function
-  format_function="${__BLOG_FORMAT_FUNCTION:-$default_format_function}"
 
-  local message_log_level
-  message_log_level="$1"
-  
-  while read -r log_line; do
-    "$format_function" "$message_log_level" <<<"$log_line"
-  done
+########## START library write.bash ###########
+
+__blog.write.get_default_destination_fd() {
+  echo "2"
 }
 
+__blog.write.is_destination_fd_set() {
+  if [[ -n "${__BLOG_WRITE_DESTINATION_FD:-}" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+__blog.write.set_destination_fd() {
+  __BLOG_WRITE_DESTINATION_FD="$1"
+  export __BLOG_WRITE_DESTINATION_FD
+}
+
+__blog.write.write() {
+  local destination_fd
+  destination_fd="${__BLOG_WRITE_DESTINATION_FD}"
+  while IFS= read -r log_line; do
+    echo "$log_line" >&"$destination_fd"
+  done
+}
+########## END library write.bash ###########
+
+
+########## START library log.bash ###########
 __blog.log() {
   local log_level
   log_level="$1"
 
   while IFS= read -r log_line; do
     echo "$log_line" \
-      | __blog.filter "$log_level" \
-      | __blog.format "$log_level" \
-      | __blog.write
+      | __blog.filter.filter "$log_level" \
+      | __blog.format.format "$log_level" \
+      | __blog.write.write
   done
 }
-########## END library core.bash ###########
+########## END library log.bash ###########
 
 
 ########## START library format_fn.bash ###########
@@ -177,29 +198,8 @@ __blog.helper.get_log_level_int() {
   esac
 }
 
-__blog.helper.is_format_fn_set() {
-  if [[ -n "${__BLOG_FORMAT_FUNCTION:-}" ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
 
-__blog.helper.is_level_set() {
-  if [[ -n "${__BLOG_LEVEL:-}" ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
 
-__blog.helper.is_destination_fd_set() {
-  if [[ -n "${__BLOG_DESTINATION_FD:-}" ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
 ########## END library helper.bash ###########
 
 
@@ -222,16 +222,16 @@ __blog.defaults.destination_fd() {
 
 
 __blog.interface.log() {
-  if ! __blog.helper.is_format_fn_set; then
-    __blog.set_format_function "$(__blog.defaults.format_fn)"
+  if ! __blog.format.is_format_fn_set; then
+    __blog.format.set_format_function "$(__blog.defaults.format_fn)"
   fi
 
-  if ! __blog.helper.is_level_set; then
-    __blog.set_level "$(__blog.defaults.level)"
+  if ! __blog.filter.is_level_set; then
+    __blog.filter.set_level "$(__blog.defaults.level)"
   fi
 
-  if ! __blog.helper.is_destination_fd_set; then
-    __blog.set_destination_fd "$(__blog.defaults.destination_fd)"
+  if ! __blog.write.is_destination_fd_set; then
+    __blog.write.set_destination_fd "$(__blog.defaults.destination_fd)"
   fi
 
   local log_level_name
@@ -246,7 +246,7 @@ __blog.interface.set_level() {
   log_level_name="$1"
   local log_level_int
   log_level_int="$(__blog.helper.get_log_level_int "$log_level_name")"
-  __blog.set_level "$log_level_int"
+  __blog.filter.set_level "$log_level_int"
 }
 
 blog.set_level_debug() {
@@ -300,13 +300,13 @@ blog.set_level_off() {
   done 
 
   # set the log level to maxint
-  __blog.set_level "$maxint"
+  __blog.filter.set_level "$maxint"
 }
 
 blog.set_format_raw() {
-  __blog.set_format_function "__blog.format_fn.raw"
+  __blog.format.set_format_function "__blog.format_fn.raw"
 }
 
 blog.set_format_bracketed() {
-  __blog.set_format_function "__blog.format_fn.bracketed"
+  __blog.format.set_format_function "__blog.format_fn.bracketed"
 }

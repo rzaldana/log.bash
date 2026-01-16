@@ -420,5 +420,5 @@ test_set_format_bracketed_sets_bracketed_format_fn() {
 
   blog.set_level_debug
   blog.set_format_bracketed
-  assert_equals "$__BLOG_FORMAT_FUNCTION" "__blog.format_fn.bracketed"
+  assert_equals "$__BLOG_FORMAT_FORMAT_FUNCTION" "__blog.format_fn.bracketed"
 }

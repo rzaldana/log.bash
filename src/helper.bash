@@ -48,26 +48,5 @@ __blog.helper.get_log_level_int() {
   esac
 }
 
-__blog.helper.is_format_fn_set() {
-  if [[ -n "${__BLOG_FORMAT_FUNCTION:-}" ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
 
-__blog.helper.is_level_set() {
-  if [[ -n "${__BLOG_LEVEL:-}" ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
 
-__blog.helper.is_destination_fd_set() {
-  if [[ -n "${__BLOG_DESTINATION_FD:-}" ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
