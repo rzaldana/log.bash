@@ -42,7 +42,7 @@ test_log_maps_log_level_name_to_int_and_sends_message_through_filter_format_writ
 
   __blog.format.set_format_function "mock_format"
   # shellcheck disable=SC2119
-  __blog.log.log "WARN" <<<"$message" >"$tmpfile"
+  __blog.core.log "WARN" <<<"$message" >"$tmpfile"
 
   assert_no_diff "$tmpfile" <(echo "[written] [formatted] [filtered] $message")
   assert_no_diff <( echo "2") "$filter_level_tmpfile" "filter function should have received log level '2'"
@@ -68,13 +68,13 @@ test_log_uses_default_format_fn_if_no_format_fn_is_configured() {
   }
 
   # shellcheck disable=SC2317
-  __blog.log.default_format_fn() {
+  __blog.core.default_format_fn() {
     echo "mock_format_fn" 
   }
 
-  __blog.log.set_level "DEBUG"
-  __blog.log.set_destination_fd "3"
-  __blog.log.log "DEBUG" <<<"hello!" 3>"$tmpfile"
+  __blog.core.set_level "DEBUG"
+  __blog.core.set_destination_fd "3"
+  __blog.core.log "DEBUG" <<<"hello!" 3>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "[bracket]: hello!" )
   : > "$tmpfile" # clear file contents
 }
@@ -98,18 +98,18 @@ test_log_uses_default_destination_fd_if_no_destination_fd_is_configured() {
   }
 
   # shellcheck disable=SC2317
-  __blog.log.default_format_fn() {
+  __blog.core.default_format_fn() {
     echo "mock_format_fn" 
   }
 
-  __blog.log.default_destination_fd() {
+  __blog.core.default_destination_fd() {
     echo "6"
   }
 
 
-  __blog.log.set_level "DEBUG"
-  __blog.log.set_format_fn "__blog.log.raw_format_fn"
-  __blog.log.log "DEBUG" <<<"hello!" 6>"$tmpfile"
+  __blog.core.set_level "DEBUG"
+  __blog.core.set_format_fn "__blog.core.raw_format_fn"
+  __blog.core.log "DEBUG" <<<"hello!" 6>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!" )
   : > "$tmpfile" # clear file contents
 }
@@ -124,29 +124,29 @@ test_log_function_uses_default_level_if_no_level_is_configured() {
   trap "rm '$tmpfile'" EXIT
 
   # shellcheck disable=SC2317
-  __blog.log.default_level() {
+  __blog.core.default_level() {
     echo "1" 
   }
 
-  __blog.log.set_format_fn "__blog.log.raw_format_fn"
+  __blog.core.set_format_fn "__blog.core.raw_format_fn"
 
-  __blog.log.log "DEBUG" <<<"hello!" 2>"$tmpfile"
+  __blog.core.log "DEBUG" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo -n "")
   : > "$tmpfile" # clear file contents
 
-  __blog.log.log "INFO" <<<"hello!" 2>"$tmpfile"
+  __blog.core.log "INFO" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!")
   : > "$tmpfile" # clear file contents
 
-  __blog.log.log "WARN" <<<"hello!" 2>"$tmpfile"
+  __blog.core.log "WARN" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!")
   : > "$tmpfile" # clear file contents
 
-  __blog.log.log "ERROR" <<<"hello!" 2>"$tmpfile"
+  __blog.core.log "ERROR" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!")
   : > "$tmpfile" # clear file contents
 
-  __blog.log.log "FATAL" <<<"hello!" 2>"$tmpfile"
+  __blog.core.log "FATAL" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!")
   : > "$tmpfile" # clear file contents
 
