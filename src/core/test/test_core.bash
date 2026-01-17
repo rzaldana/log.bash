@@ -146,3 +146,22 @@ test_log_function_uses_default_level_if_no_level_is_configured() {
   : > "$tmpfile" # clear file contents
 
 }
+
+test_format_fn_wrapper_prints_warning_if_passed_in_format_fn_fails() {
+  set -euo pipefail
+  source "$LIBRARY_PATH"
+
+  tmpfile="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap "rm '$tmpfile'" EXIT
+
+  mock_format_fn() {
+    return 1  
+  }
+
+  __log.core.set_format_fn 'mock_format_fn'
+  __log.core.log "WARN" <<<"hello!" 2>"$tmpfile"
+  assert_no_diff \
+    <( echo "log.bash: WARNING: format function 'mock_format_fn' returned non-zero exit code") \
+    "$tmpfile"
+}
