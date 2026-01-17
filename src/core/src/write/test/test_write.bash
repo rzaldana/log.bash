@@ -1,6 +1,6 @@
 # Get the directory of the script that's currently running
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-LIBRARY_PATH="$SCRIPT_DIR/dist/write.bash"
+LIBRARY_PATH="$SCRIPT_DIR/../write.bash"
 
 test_write_sends_message_to_configured_fd() {
   set -euo pipefail

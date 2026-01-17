@@ -1,6 +1,6 @@
 # Get the directory of the script that's currently running
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-LIBRARY_PATH="$SCRIPT_DIR/dist/log.bash"
+LIBRARY_PATH="$SCRIPT_DIR/../log.bash"
 
 test_log_maps_log_level_name_to_int_and_sends_message_through_filter_format_write_pipeline() {
   set -euo pipefail

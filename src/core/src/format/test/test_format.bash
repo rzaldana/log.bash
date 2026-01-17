@@ -1,6 +1,6 @@
 # Get the directory of the script that's currently running
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-LIBRARY_PATH="$SCRIPT_DIR/dist/format.bash"
+LIBRARY_PATH="$SCRIPT_DIR/../format.bash"
 
 test_format_runs_configured_format_function() {
   set -euo pipefail

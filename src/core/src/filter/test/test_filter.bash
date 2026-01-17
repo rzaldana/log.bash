@@ -1,6 +1,6 @@
 # Get the directory of the script that's currently running
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-LIBRARY_PATH="$SCRIPT_DIR/dist/filter.bash"
+LIBRARY_PATH="$SCRIPT_DIR/../filter.bash"
 
 test_filter_forwards_message_if_message_log_level_is_higher_than_set_level() {
   set -euo pipefail
