@@ -15,7 +15,7 @@ test_log_maps_log_level_name_to_int_and_sends_message_through_filter_format_writ
  
   # shellcheck disable=SC2317 
   # mock filter function
-  __blog.filter.filter() {
+  __log.filter.filter() {
     filter_got_level="$1"
     echo "$filter_got_level" >"$filter_level_tmpfile"
     while IFS= read -r line; do
@@ -27,7 +27,7 @@ test_log_maps_log_level_name_to_int_and_sends_message_through_filter_format_writ
 
   # shellcheck disable=SC2317 
   # mock format function
-  __blog.format.format() {
+  __log.format.format() {
     format_got_level="$1"
     echo "$format_got_level" >"$format_level_tmpfile"
     while IFS= read -r line; do
@@ -37,14 +37,14 @@ test_log_maps_log_level_name_to_int_and_sends_message_through_filter_format_writ
 
   # mock write function
   # shellcheck disable=SC2317 
-  __blog.write.write() {
+  __log.write.write() {
     while IFS= read -r line; do
       echo "[written] $line"
     done
   }
   
 
-  __blog.core.log "WARN" <<<"$message" >"$tmpfile"
+  __log.core.log "WARN" <<<"$message" >"$tmpfile"
 
   assert_no_diff "$tmpfile" <(echo "[written] [formatted] [filtered] $message")
   assert_no_diff <( echo "2") "$filter_level_tmpfile" "filter function should have received log level '2'"
@@ -70,13 +70,13 @@ test_log_uses_default_format_fn_if_no_format_fn_is_configured() {
   }
 
   # shellcheck disable=SC2317
-  __blog.core.default_format_fn() {
+  __log.core.default_format_fn() {
     echo "mock_format_fn" 
   }
 
-  __blog.core.set_level "DEBUG"
-  __blog.core.set_destination_fd "3"
-  __blog.core.log "DEBUG" <<<"hello!" 3>"$tmpfile"
+  __log.core.set_level "DEBUG"
+  __log.core.set_destination_fd "3"
+  __log.core.log "DEBUG" <<<"hello!" 3>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "[bracket]: hello!" )
   : > "$tmpfile" # clear file contents
 }
@@ -93,18 +93,18 @@ test_log_uses_default_destination_fd_if_no_destination_fd_is_configured() {
 
 
   # shellcheck disable=SC2317
-  __blog.core.default_format_fn() {
+  __log.core.default_format_fn() {
     echo "mock_format_fn" 
   }
 
-  __blog.core.default_destination_fd() {
+  __log.core.default_destination_fd() {
     echo "6"
   }
 
 
-  __blog.core.set_level "DEBUG"
-  __blog.core.set_format_raw
-  __blog.core.log "DEBUG" <<<"hello!" 6>"$tmpfile"
+  __log.core.set_level "DEBUG"
+  __log.core.set_format_raw
+  __log.core.log "DEBUG" <<<"hello!" 6>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!" )
   : > "$tmpfile" # clear file contents
 }
@@ -119,29 +119,29 @@ test_log_function_uses_default_level_if_no_level_is_configured() {
   trap "rm '$tmpfile'" EXIT
 
   # shellcheck disable=SC2317
-  __blog.core.default_level() {
+  __log.core.default_level() {
     echo "1" 
   }
 
-  __blog.core.set_format_raw
+  __log.core.set_format_raw
 
-  __blog.core.log "DEBUG" <<<"hello!" 2>"$tmpfile"
+  __log.core.log "DEBUG" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo -n "")
   : > "$tmpfile" # clear file contents
 
-  __blog.core.log "INFO" <<<"hello!" 2>"$tmpfile"
+  __log.core.log "INFO" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!")
   : > "$tmpfile" # clear file contents
 
-  __blog.core.log "WARN" <<<"hello!" 2>"$tmpfile"
+  __log.core.log "WARN" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!")
   : > "$tmpfile" # clear file contents
 
-  __blog.core.log "ERROR" <<<"hello!" 2>"$tmpfile"
+  __log.core.log "ERROR" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!")
   : > "$tmpfile" # clear file contents
 
-  __blog.core.log "FATAL" <<<"hello!" 2>"$tmpfile"
+  __log.core.log "FATAL" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!")
   : > "$tmpfile" # clear file contents
 

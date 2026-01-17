@@ -4,51 +4,51 @@ source format/format.bash
 source write/write.bash
 source format_fn/format_fn.bash
 
-__blog.core.log() {
+__log.core.log() {
   local log_level_name
   log_level_name="$1"
 
   # use defualt format fn if not set
-  if ! __blog.format.is_format_fn_set; then
-    __blog.format.set_format_function "$(__blog.core.default_format_fn)"
+  if ! __log.format.is_format_fn_set; then
+    __log.format.set_format_function "$(__log.core.default_format_fn)"
   fi
 
   # use default destination fd if not set
-  if ! __blog.write.is_destination_fd_set; then
-    __blog.write.set_destination_fd "$(__blog.core.default_destination_fd)"
+  if ! __log.write.is_destination_fd_set; then
+    __log.write.set_destination_fd "$(__log.core.default_destination_fd)"
   fi
 
   # use default log level if level is not set
-  if ! __blog.filter.is_level_set; then
-    __blog.filter.set_level "$(__blog.core.default_level)"
+  if ! __log.filter.is_level_set; then
+    __log.filter.set_level "$(__log.core.default_level)"
   fi
 
   local log_level_int
-  log_level_int="$(__blog.core.get_log_level_int "$log_level_name")"
+  log_level_int="$(__log.core.get_log_level_int "$log_level_name")"
 
   while IFS= read -r log_line; do
     echo "$log_line" \
-      | __blog.filter.filter "$log_level_int" \
-      | __blog.format.format "$log_level_int" \
-      | __blog.write.write
+      | __log.filter.filter "$log_level_int" \
+      | __log.format.format "$log_level_int" \
+      | __log.write.write
   done
 }
 
 
-__blog.core.default_format_fn() {
-  echo "__blog.core.bracketed_format_fn"
+__log.core.default_format_fn() {
+  echo "__log.core.bracketed_format_fn"
 }
 
-__blog.core.default_level() {
+__log.core.default_level() {
   echo "2" # warn
 }
 
-__blog.core.default_destination_fd() {
+__log.core.default_destination_fd() {
   echo "2" # stderr
 }
 
 
-__blog.core.get_log_level_name() {
+__log.core.get_log_level_name() {
   local log_level
   log_level="$1"
   case "$log_level" in
@@ -73,7 +73,7 @@ __blog.core.get_log_level_name() {
   esac
 }
 
-__blog.core.get_log_level_int() {
+__log.core.get_log_level_int() {
   local log_level_name
   log_level_name="$1"
   case "$log_level_name" in
@@ -100,46 +100,46 @@ __blog.core.get_log_level_int() {
 
 
 
-__blog.core.set_level() {
+__log.core.set_level() {
   local log_level_name
   log_level_name="$1"
   local log_level_int
-  log_level_int="$(__blog.core.get_log_level_int "$log_level_name")"
-  __blog.filter.set_level "$log_level_int"
+  log_level_int="$(__log.core.get_log_level_int "$log_level_name")"
+  __log.filter.set_level "$log_level_int"
 }
 
-__blog.core.set_destination_fd() {
+__log.core.set_destination_fd() {
   local destination_fd
   destination_fd="$1"
-  __blog.write.set_destination_fd "$destination_fd"
+  __log.write.set_destination_fd "$destination_fd"
 }
 
-__blog.core.raw_format_fn() {
+__log.core.raw_format_fn() {
   # normalize log level to name
   local log_level
   log_level="$1"
   local log_level_name
-  log_level_name="$(__blog.core.get_log_level_name "$log_level")"
+  log_level_name="$(__log.core.get_log_level_name "$log_level")"
 
   # pass log level name to format function
-  __blog.format_fn.raw_format_fn  "$log_level_name"
+  __log.format_fn.raw_format_fn  "$log_level_name"
 }
 
-__blog.core.bracketed_format_fn() {
+__log.core.bracketed_format_fn() {
   # normalize log level to name
   local log_level
   log_level="$1"
   local log_level_name
-  log_level_name="$(__blog.core.get_log_level_name "$log_level")"
+  log_level_name="$(__log.core.get_log_level_name "$log_level")"
 
   # pass log level name to format function
-  __blog.format_fn.bracketed_format_fn "$log_level_name"
+  __log.format_fn.bracketed_format_fn "$log_level_name"
 }
 
-__blog.core.set_format_bracketed() {
-  __blog.format.set_format_function "__blog.core.bracketed_format_fn"
+__log.core.set_format_bracketed() {
+  __log.format.set_format_function "__log.core.bracketed_format_fn"
 }
 
-__blog.core.set_format_raw() {
-  __blog.format.set_format_function "__blog.core.raw_format_fn"
+__log.core.set_format_raw() {
+  __log.format.set_format_function "__log.core.raw_format_fn"
 }
