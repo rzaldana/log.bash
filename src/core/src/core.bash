@@ -36,7 +36,7 @@ __log.core.log() {
 
 
 __log.core.default_format_fn() {
-  echo "__log.format_fn.bracketed_format_fn"
+  echo "__log.core.format_fn.bracketed_format_fn"
 }
 
 __log.core.default_level() {
@@ -145,11 +145,11 @@ __log.core.format_fn_wrapper() {
 }
 
 __log.core.set_format_bracketed() {
-  __log.core.set_format_fn "__log.format_fn.bracketed_format_fn"
+  __log.core.set_format_fn "__log.core.format_fn.bracketed_format_fn"
 }
 
 __log.core.set_format_raw() {
-  __log.core.set_format_fn "__log.format_fn.raw_format_fn"
+  __log.core.set_format_fn "__log.core.format_fn.raw_format_fn"
 }
 
 # Set format.format_function to core.format_fn.wrapper
