@@ -1,8 +1,9 @@
-1. Add tests for format functions
-2. Create json format function
-3. Add util to retrieve date and use in formatting functions
+- Add tests for format functions
+- Add testts for wrapper format functions in core (or generalize log level name normalization logic)
+- Create json format function
+- Add util to retrieve date and use in formatting functions
     - util should check for availability of `date` tool when loaded and have sane behaviour if tool is not present
-3. Add util to print color and use in formatting function
+- Add util to print color and use in formatting function
     - util should check if terminal is connected and have sane behaviour if not connected (i.e. omit color codes)
-2. Add tests for default functions in core
-3. Add more integration tests
+- Add tests for default functions in core
+- Add more integration tests
