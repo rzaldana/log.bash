@@ -11,8 +11,8 @@ test_filter_forwards_message_if_message_log_level_is_higher_than_set_level() {
   # shellcheck disable=SC2064
   trap "rm $tmpfile" EXIT
 
-  __log.filter.set_level "4"
-  __log.filter.filter "5" <<<"$message" >"$tmpfile"
+  __log.core.filter.set_level "4"
+  __log.core.filter.filter "5" <<<"$message" >"$tmpfile"
 
   assert_no_diff "$tmpfile" <(echo "$message")
 }
@@ -26,8 +26,8 @@ test_filter_forwards_message_if_message_log_level_is_equal_to_set_level() {
   # shellcheck disable=SC2064
   trap "rm $tmpfile" EXIT
 
-  __log.filter.set_level "4"
-  __log.filter.filter "4" <<<"$message" >"$tmpfile"
+  __log.core.filter.set_level "4"
+  __log.core.filter.filter "4" <<<"$message" >"$tmpfile"
 
   assert_no_diff "$tmpfile" <(echo "$message")
 }
@@ -42,8 +42,8 @@ test_filter_discards_message_if_message_log_level_is_lower_than_set_level() {
   # shellcheck disable=SC2064
   trap "rm $tmpfile" EXIT
 
-  __log.filter.set_level "4"
-  __log.filter.filter "3" <<<"$message" >"$tmpfile"
+  __log.core.filter.set_level "4"
+  __log.core.filter.filter "3" <<<"$message" >"$tmpfile"
 
   assert_no_diff "$tmpfile" <(echo -n "")
 }
