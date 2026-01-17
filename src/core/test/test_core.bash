@@ -1,6 +1,6 @@
 # Get the directory of the script that's currently running
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-LIBRARY_PATH="$SCRIPT_DIR/../log.bash"
+LIBRARY_PATH="$SCRIPT_DIR/../core.bash"
 
 test_log_maps_log_level_name_to_int_and_sends_message_through_filter_format_write_pipeline() {
   set -euo pipefail
@@ -40,7 +40,7 @@ test_log_maps_log_level_name_to_int_and_sends_message_through_filter_format_writ
   }
   
 
-  __blog.format.set_format_function "mock_format"
+  __blog.core.set_format_fn "mock_format"
   # shellcheck disable=SC2119
   __blog.core.log "WARN" <<<"$message" >"$tmpfile"
 
@@ -93,7 +93,7 @@ test_log_uses_default_destination_fd_if_no_destination_fd_is_configured() {
   mock_format_fn() {
   # shellcheck disable=SC2317
     while IFS= read -r line; do
-     echo "[bracket]: $line" 
+     echo "$line" 
     done
   }
 
@@ -108,7 +108,7 @@ test_log_uses_default_destination_fd_if_no_destination_fd_is_configured() {
 
 
   __blog.core.set_level "DEBUG"
-  __blog.core.set_format_fn "__blog.core.raw_format_fn"
+  __blog.core.set_format_fn "mock_format_fn"
   __blog.core.log "DEBUG" <<<"hello!" 6>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo "hello!" )
   : > "$tmpfile" # clear file contents
@@ -124,11 +124,18 @@ test_log_function_uses_default_level_if_no_level_is_configured() {
   trap "rm '$tmpfile'" EXIT
 
   # shellcheck disable=SC2317
+  mock_format_fn() {
+    while IFS= read -r line; do 
+      echo "$line"
+    done
+  }
+
+  # shellcheck disable=SC2317
   __blog.core.default_level() {
     echo "1" 
   }
 
-  __blog.core.set_format_fn "__blog.core.raw_format_fn"
+  __blog.core.set_format_fn "mock_format_fn"
 
   __blog.core.log "DEBUG" <<<"hello!" 2>"$tmpfile"
   assert_no_diff "$tmpfile" <( echo -n "")
