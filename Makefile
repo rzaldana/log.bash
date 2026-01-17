@@ -15,11 +15,17 @@ DOCKERFILE := $(DOCKER_CONTEXT)/Dockerfile
 
 SUPPORTED_VERSIONS_FILE := $(ROOT_DIR)/SUPPORTED_BASH_VERSIONS
 
+SUBMODULES := $(wildcard $(CURRENT_DIR)/src/*/*.bash)
+
+echo:
+	@echo "$(SUBMODULES)"
+
 # All .bash files in ./src 
 SRC_BASH := $(wildcard $(CURRENT_DIR)/src/*.bash)
 
 # Map them into ./
 DST_BASH := $(patsubst $(CURRENT_DIR)/src/%.bash,$(CURRENT_DIR)/%.bash,$(SRC_BASH))
+
 
 $(IMAGE_TAGS_FILE): $(ROOT_DIR)/Dockerfile $(ROOT_DIR)/SUPPORTED_BASH_VERSIONS
 	@if [[ -f "$(IMAGE_TAGS_FILE)" ]]; then \
@@ -40,8 +46,17 @@ $(IMAGE_TAGS_FILE): $(ROOT_DIR)/Dockerfile $(ROOT_DIR)/SUPPORTED_BASH_VERSIONS
 
 build: $(DST_BASH)
 
-$(CURRENT_DIR)/%.bash: $(CURRENT_DIR)/src/%.bash 
+#$(CURRENT_DIR)/%.bash: $(CURRENT_DIR)/src/%.bash $(SUBMODULES)
+#	@$(ROOT_DIR)/submodules/blink/blink "$<" "$@"
+#
+$(DST_BASH): %.bash: src/%.bash $(SUBMODULES)
 	@$(ROOT_DIR)/submodules/blink/blink "$<" "$@"
+
+#%.bash: src/%.bash $(SUBMODULES) 
+#	@$(ROOT_DIR)/submodules/blink/blink "$<" "$@"
+
+#$(CURRENT_DIR)/src/%.bash: $(CURRENT_DIR)/src/%.bash 
+#	@$(ROOT_DIR)/submodules/blink/blink "$<" "$@"
 
 
 test: $(IMAGE_TAGS_FILE) $(DST_BASH)
@@ -53,5 +68,4 @@ test: $(IMAGE_TAGS_FILE) $(DST_BASH)
 		--volume "$(CURRENT_DIR):/var/task" \
 		--entrypoint bash_unit "$$image_tag" $(CURRENT_DIR)/test/test_*.bash; \
 	done < "$(IMAGE_TAGS_FILE)"
-
 
