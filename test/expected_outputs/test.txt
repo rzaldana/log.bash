@@ -5,3 +5,4 @@ bye
 [test.bash][ INFO]: hello
 [test.bash][ WARN]: bye
 [test.bash][ERROR]: hello
+[test.bash][DEBUG]: hi

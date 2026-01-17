@@ -21,6 +21,10 @@ log.set_level_fatal() {
   __log.core.set_level "FATAL"
 }
 
+log.set_level_off() {
+  __log.core.set_level "OFF"
+}
+
 log.debug() {
   __log.core.log "DEBUG"
 }

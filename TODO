@@ -1,4 +1,3 @@
-- Add OFF level to core and expose through interface
 - Add tests for format functions
 - Add testts for wrapper format functions in core (or generalize log level name normalization logic)
 - Create json format function

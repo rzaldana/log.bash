@@ -20,3 +20,12 @@ log.set_format_bracketed
 echo "hello" | log.info
 echo "bye" | log.warn
 echo "hello" | log.error
+
+log.set_level_off
+echo "hello" | log.info
+echo "bye" | log.warn
+echo "hello" | log.error
+
+
+log.set_level_debug
+echo "hi" | log.debug
