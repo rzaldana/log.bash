@@ -15,7 +15,7 @@ test_log_maps_log_level_name_to_int_and_sends_message_through_filter_format_writ
  
   # shellcheck disable=SC2317 
   # mock filter function
-  __log.filter.filter() {
+  __log.core.filter.filter() {
     filter_got_level="$1"
     echo "$filter_got_level" >"$filter_level_tmpfile"
     while IFS= read -r line; do
@@ -27,7 +27,7 @@ test_log_maps_log_level_name_to_int_and_sends_message_through_filter_format_writ
 
   # shellcheck disable=SC2317 
   # mock format function
-  __log.format.format() {
+  __log.core.format.format() {
     format_got_level="$1"
     echo "$format_got_level" >"$format_level_tmpfile"
     while IFS= read -r line; do
@@ -37,7 +37,7 @@ test_log_maps_log_level_name_to_int_and_sends_message_through_filter_format_writ
 
   # mock write function
   # shellcheck disable=SC2317 
-  __log.write.write() {
+  __log.core.write.write() {
     while IFS= read -r line; do
       echo "[written] $line"
     done

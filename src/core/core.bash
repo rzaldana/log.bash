@@ -1,7 +1,7 @@
 
 
 ########## START library filter.bash ###########
-__log.filter.is_level_set() {
+__log.core.filter.is_level_set() {
   if [[ -n "${__BLOG_FILTER_LEVEL:-}" ]]; then
     return 0
   else
@@ -9,13 +9,13 @@ __log.filter.is_level_set() {
   fi
 }
 
-__log.filter.set_level() {
+__log.core.filter.set_level() {
   local level
   level="$1"
   export __BLOG_FILTER_LEVEL="$level"
 }
 
-__log.filter.filter() {
+__log.core.filter.filter() {
   local set_log_level
   set_log_level="${__BLOG_FILTER_LEVEL}"
   
@@ -32,7 +32,7 @@ __log.filter.filter() {
 
 
 ########## START library format.bash ###########
-__log.format.is_format_fn_set() {
+__log.core.format.is_format_fn_set() {
   if [[ -n "${__BLOG_FORMAT_FORMAT_FUNCTION:-}" ]]; then
     return 0
   else
@@ -40,11 +40,11 @@ __log.format.is_format_fn_set() {
   fi
 }
 
-__log.format.set_format_function() {
+__log.core.format.set_format_function() {
   export __BLOG_FORMAT_FORMAT_FUNCTION="$1"
 }
 
-__log.format.format() {
+__log.core.format.format() {
   format_function="${__BLOG_FORMAT_FORMAT_FUNCTION}"
 
   local message_log_level
@@ -59,11 +59,11 @@ __log.format.format() {
 
 ########## START library write.bash ###########
 
-__log.write.get_default_destination_fd() {
+__log.core.write.get_default_destination_fd() {
   echo "2"
 }
 
-__log.write.is_destination_fd_set() {
+__log.core.write.is_destination_fd_set() {
   if [[ -n "${__BLOG_WRITE_DESTINATION_FD:-}" ]]; then
     return 0
   else
@@ -71,12 +71,12 @@ __log.write.is_destination_fd_set() {
   fi
 }
 
-__log.write.set_destination_fd() {
+__log.core.write.set_destination_fd() {
   __BLOG_WRITE_DESTINATION_FD="$1"
   export __BLOG_WRITE_DESTINATION_FD
 }
 
-__log.write.write() {
+__log.core.write.write() {
   local destination_fd
   destination_fd="${__BLOG_WRITE_DESTINATION_FD}"
   while IFS= read -r log_line; do
@@ -143,18 +143,18 @@ __log.core.log() {
   log_level_name="$1"
 
   # use defualt format fn if not set
-  if ! __log.format.is_format_fn_set; then
-    __log.format.set_format_function "$(__log.core.default_format_fn)"
+  if ! __log.core.format.is_format_fn_set; then
+    __log.core.format.set_format_function "$(__log.core.default_format_fn)"
   fi
 
   # use default destination fd if not set
-  if ! __log.write.is_destination_fd_set; then
-    __log.write.set_destination_fd "$(__log.core.default_destination_fd)"
+  if ! __log.core.write.is_destination_fd_set; then
+    __log.core.write.set_destination_fd "$(__log.core.default_destination_fd)"
   fi
 
   # use default log level if level is not set
-  if ! __log.filter.is_level_set; then
-    __log.filter.set_level "$(__log.core.default_level)"
+  if ! __log.core.filter.is_level_set; then
+    __log.core.filter.set_level "$(__log.core.default_level)"
   fi
 
   local log_level_int
@@ -162,9 +162,9 @@ __log.core.log() {
 
   while IFS= read -r log_line; do
     echo "$log_line" \
-      | __log.filter.filter "$log_level_int" \
-      | __log.format.format "$log_level_int" \
-      | __log.write.write
+      | __log.core.filter.filter "$log_level_int" \
+      | __log.core.format.format "$log_level_int" \
+      | __log.core.write.write
   done
 }
 
@@ -239,13 +239,13 @@ __log.core.set_level() {
   log_level_name="$1"
   local log_level_int
   log_level_int="$(__log.core.get_log_level_int "$log_level_name")"
-  __log.filter.set_level "$log_level_int"
+  __log.core.filter.set_level "$log_level_int"
 }
 
 __log.core.set_destination_fd() {
   local destination_fd
   destination_fd="$1"
-  __log.write.set_destination_fd "$destination_fd"
+  __log.core.write.set_destination_fd "$destination_fd"
 }
 
 __log.core.raw_format_fn() {
@@ -271,9 +271,9 @@ __log.core.bracketed_format_fn() {
 }
 
 __log.core.set_format_bracketed() {
-  __log.format.set_format_function "__log.core.bracketed_format_fn"
+  __log.core.format.set_format_function "__log.core.bracketed_format_fn"
 }
 
 __log.core.set_format_raw() {
-  __log.format.set_format_function "__log.core.raw_format_fn"
+  __log.core.format.set_format_function "__log.core.raw_format_fn"
 }
