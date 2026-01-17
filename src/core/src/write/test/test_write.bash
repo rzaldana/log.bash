@@ -11,8 +11,8 @@ test_write_sends_message_to_configured_fd() {
   # shellcheck disable=SC2064
   trap "rm $tmpfile" EXIT
 
-  __blog.write.set_destination_fd "3"
-  __blog.write.write <<<"$message" 3>"$tmpfile"
+  __log.write.set_destination_fd "3"
+  __log.write.write <<<"$message" 3>"$tmpfile"
 
   assert_no_diff "$tmpfile" <(echo "$message")
 }

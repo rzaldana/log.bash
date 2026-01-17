@@ -1,9 +1,9 @@
 
-__blog.write.get_default_destination_fd() {
+__log.write.get_default_destination_fd() {
   echo "2"
 }
 
-__blog.write.is_destination_fd_set() {
+__log.write.is_destination_fd_set() {
   if [[ -n "${__BLOG_WRITE_DESTINATION_FD:-}" ]]; then
     return 0
   else
@@ -11,12 +11,12 @@ __blog.write.is_destination_fd_set() {
   fi
 }
 
-__blog.write.set_destination_fd() {
+__log.write.set_destination_fd() {
   __BLOG_WRITE_DESTINATION_FD="$1"
   export __BLOG_WRITE_DESTINATION_FD
 }
 
-__blog.write.write() {
+__log.write.write() {
   local destination_fd
   destination_fd="${__BLOG_WRITE_DESTINATION_FD}"
   while IFS= read -r log_line; do
