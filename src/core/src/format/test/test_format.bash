@@ -19,9 +19,9 @@ test_format_runs_configured_format_function() {
     done
   }
 
-  __log.format.set_format_function "mock_format"
+  __log.core.format.set_format_function "mock_format"
   # shellcheck disable=SC2119
-  __log.format.format "3" <<<"$message" >"$tmpfile"
+  __log.core.format.format "3" <<<"$message" >"$tmpfile"
 
   assert_no_diff "$tmpfile" <(echo "[3][formatted] $message")
 }
