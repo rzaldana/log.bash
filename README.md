@@ -6,7 +6,7 @@ It gives you clean log levels, simple formatting, and predictable output, all th
 Only functions **without** the `__` prefix are meant for direct use. 
 
 ## Features 
-- Log levels: `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL` 
+- Log levels: `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`, `OFF`
 - Default level: `WARN` 
 - Two built‑in formatters: 
     - **raw** — plain text 
