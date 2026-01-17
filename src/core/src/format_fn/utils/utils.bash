@@ -13,7 +13,7 @@
 #     0: "always" 
 # tags:
 #   - "std"
-__blog.core.format_fn.utils() {
+__blog.core.format_fn.utils.get_parent_script_name() {
   # Get the length of FUNCNAME
   local -i funcname_length
   funcname_length="${#FUNCNAME[@]}" 

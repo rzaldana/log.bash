@@ -8,12 +8,14 @@ __blog.format_fn.raw_format_fn() {
 }
 
 __blog.format_fn.bracketed_format_fn() {
-  local log_level
-  log_level="$1"
   local log_level_name
-  # shellcheck disable=SC2119
-  log_level_name="$(__blog.core.get_log_level_name "$log_level")"
+  log_level_name="$1"
+
+  # get parent script's name
+  local parent_script_name
+  parent_script_name="$(__blog.core.format_fn.utils.get_parent_script_name)"
+
   while IFS= read -r line; do
-    printf "[%7s]: %s\n" "$log_level_name" "$line"
+    printf "[%s][%5s]: %s\n" "$parent_script_name" "$log_level_name" "$line"
   done
 }

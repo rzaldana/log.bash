@@ -91,6 +91,35 @@ __blog.write.write() {
 
 ########## START library format_fn.bash ###########
 
+
+########## START library utils.bash ###########
+# description: |
+#   Returns the name of the script that's currently 
+#   executing, even if the function is called from
+#   a sourced library. Only the basename, not the
+#   entire path, is returned
+# inputs:
+#   stdin: null 
+#   args: null
+# outputs:
+#   stdout: null
+#   stderr: null
+#   return_code:
+#     0: "always" 
+# tags:
+#   - "std"
+__blog.core.format_fn.utils.get_parent_script_name() {
+  # Get the length of FUNCNAME
+  local -i funcname_length
+  funcname_length="${#FUNCNAME[@]}" 
+
+  local -i top_level_index
+  top_level_index=$(( funcname_length - 1 ))
+  printf "%s" "$( basename "${BASH_SOURCE[$top_level_index]}" )"
+}
+########## END library utils.bash ###########
+
+
 __blog.format_fn.raw_format_fn() {
   while IFS= read -r line; do
     echo "$line"
@@ -98,13 +127,15 @@ __blog.format_fn.raw_format_fn() {
 }
 
 __blog.format_fn.bracketed_format_fn() {
-  local log_level
-  log_level="$1"
   local log_level_name
-  # shellcheck disable=SC2119
-  log_level_name="$(__blog.core.get_log_level_name "$log_level")"
+  log_level_name="$1"
+
+  # get parent script's name
+  local parent_script_name
+  parent_script_name="$(__blog.core.format_fn.utils.get_parent_script_name)"
+
   while IFS= read -r line; do
-    printf "[%7s]: %s\n" "$log_level_name" "$line"
+    printf "[%s][%5s]: %s\n" "$parent_script_name" "$log_level_name" "$line"
   done
 }
 ########## END library format_fn.bash ###########
@@ -142,7 +173,7 @@ __blog.core.log() {
 
 
 __blog.core.default_format_fn() {
-  echo "__blog.format_fn.bracketed_format_fn"
+  echo "__blog.core.bracketed_format_fn"
 }
 
 __blog.core.default_level() {
@@ -220,12 +251,34 @@ __blog.core.set_destination_fd() {
   __blog.write.set_destination_fd "$destination_fd"
 }
 
+__blog.core.raw_format_fn() {
+  # normalize log level to name
+  local log_level
+  log_level="$1"
+  local log_level_name
+  log_level_name="$(__blog.core.get_log_level_name "$log_level")"
+
+  # pass log level name to format function
+  __blog.format_fn.raw_format_fn  "$log_level_name"
+}
+
+__blog.core.bracketed_format_fn() {
+  # normalize log level to name
+  local log_level
+  log_level="$1"
+  local log_level_name
+  log_level_name="$(__blog.core.get_log_level_name "$log_level")"
+
+  # pass log level name to format function
+  __blog.format_fn.bracketed_format_fn "$log_level_name"
+}
+
 __blog.core.set_format_bracketed() {
-  __blog.format.set_format_function "__blog.format_fn.bracketed_format_fn"
+  __blog.format.set_format_function "__blog.core.bracketed_format_fn"
 }
 
 __blog.core.set_format_raw() {
-  __blog.format.set_format_function "__blog.format_fn.raw_format_fn"
+  __blog.format.set_format_function "__blog.core.raw_format_fn"
 }
 ########## END library core.bash ###########
 

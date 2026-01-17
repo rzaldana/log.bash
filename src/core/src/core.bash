@@ -36,7 +36,7 @@ __blog.core.log() {
 
 
 __blog.core.default_format_fn() {
-  echo "__blog.format_fn.bracketed_format_fn"
+  echo "__blog.core.bracketed_format_fn"
 }
 
 __blog.core.default_level() {
