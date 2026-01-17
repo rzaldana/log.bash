@@ -4,7 +4,6 @@ source format.bash
 source filter.bash
 source write.bash
 source log.bash
-source helper.bash
 source defaults.bash
 
 

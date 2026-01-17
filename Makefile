@@ -44,18 +44,6 @@ $(CURRENT_DIR)/dist/%.bash: $(CURRENT_DIR)/%.bash
 	@mkdir -p "$(CURRENT_DIR)/dist" 
 	@$(ROOT_DIR)/submodules/blink/blink "$<" "$@"
 
-#build: 
-#	@if ! [[ -d "$(CURRENT_DIR)/dist" ]]; then \
-#		mkdir "$(CURRENT_DIR)/dist"; \
-#	fi
-#	@cd "$(CURRENT_DIR)"; \
-#	for f in *.bash; do \
-#		if [[ -z "$${f##test_*}" ]]; then \
-#			continue; \
-#		fi; \
-#		$(ROOT_DIR)/submodules/blink/blink "$$f" "$(CURRENT_DIR)/dist/$$f"; \
-#		echo "$$f"; \
-#	done
 
 test: $(IMAGE_TAGS_FILE) $(DIST_BASH)
 	@while IFS= read -r image_tag; do \
