@@ -1,5 +1,18 @@
 
 
+########## START library date.bash ###########
+__log.core.utils.date.is_date_installed() {
+  if ! command -v date >/dev/null 2>&1; then
+    return 1 
+  fi
+}
+
+__log.core.utils.date.timestamp() {
+  date -u +"%Y-%m-%dT%H:%M:%SZ"
+}
+########## END library date.bash ###########
+
+
 ########## START library json.bash ###########
 
 __log.core.utils.json.is_jq_installed() {
@@ -57,5 +70,5 @@ __log.core.utils.get_parent_script_name() {
 
   local -i top_level_index
   top_level_index=$(( funcname_length - 1 ))
-  printf "%s" "$( basename "${BASH_SOURCE[$top_level_index]}" )"
+  printf "%s" "${BASH_SOURCE[$top_level_index]##*/}"
 }

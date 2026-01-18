@@ -36,7 +36,12 @@ __log.core.log() {
 
 
 __log.core.default_format_fn() {
-  echo "__log.core.bracketed_format_fn"
+  if ! __log.core.utils.date.is_date_installed; then
+    echo "log.bash: WARNING: 'date' command is not available. Omitting timestamp from logs" >&2
+    echo "__log.core.bracketed_format_fn_no_date"
+  else
+    echo "__log.core.bracketed_format_fn"
+  fi
 }
 
 __log.core.default_level() {
@@ -159,12 +164,47 @@ __log.core.bracketed_format_fn() {
   parent_script_name="$(__log.core.utils.get_parent_script_name)"
 
   while IFS= read -r line; do
+    printf \
+      "[%s][%s][%5s]: %s\n" \
+      "$(__log.core.utils.date.timestamp)" \
+      "$parent_script_name" \
+      "$log_level_name" \
+      "$line"
+  done
+}
+
+__log.core.bracketed_format_fn_no_date() {
+  local log_level_name
+  log_level_name="$1"
+
+  # get parent script's name
+  local parent_script_name
+  parent_script_name="$(__log.core.utils.get_parent_script_name)"
+
+  while IFS= read -r line; do
     printf "[%s][%5s]: %s\n" "$parent_script_name" "$log_level_name" "$line"
   done
 }
 
 
 __log.core.json_format_fn() {
+  local log_level_name
+  log_level_name="$1"
+
+  # get parent script's name
+  local parent_script_name
+  parent_script_name="$(__log.core.utils.get_parent_script_name)"
+
+  while IFS= read -r line; do
+    __log.core.utils.json.object.new \
+      | __log.core.utils.json.object.add_key_value "timestamp" "$(__log.core.utils.date.timestamp)" \
+      | __log.core.utils.json.object.add_key_value "parent" "$parent_script_name" \
+      | __log.core.utils.json.object.add_key_value "level" "$log_level_name" \
+      | __log.core.utils.json.object.add_key_value "message" "$line"
+  done
+}
+
+__log.core.json_format_fn_no_date() {
   local log_level_name
   log_level_name="$1"
 
@@ -181,7 +221,12 @@ __log.core.json_format_fn() {
 }
 
 __log.core.set_format_bracketed() {
-  __log.core.set_format_fn "__log.core.bracketed_format_fn"
+  if ! __log.core.utils.date.is_date_installed; then
+    echo "log.bash: WARNING: 'date' command is not available. Omitting timestamp from logs" >&2
+    __log.core.set_format_fn "__log.core.bracketed_format_fn_no_date"
+  else
+    __log.core.set_format_fn "__log.core.bracketed_format_fn"
+  fi
 }
 
 __log.core.set_format_raw() {
@@ -189,12 +234,18 @@ __log.core.set_format_raw() {
 }
 
 __log.core.set_format_json() {
+  if ! __log.core.utils.date.is_date_installed; then
+    echo "log.bash: WARNING: 'date' command is not available. Omitting timestamp from logs" >&2
+    __log.core.set_format_fn "__log.core.json_format_fn_no_date"
+  else
+    __log.core.set_format_fn "__log.core.json_format_fn"
+  fi
+
   if ! __log.core.utils.json.is_jq_installed; then
-    echo "log.bash: WARNING: format was set to json but jq is not available. Using default format" >&2
+    echo "log.bash: WARNING: format was set to json but 'jq' command is not available. Using default format" >&2
     __log.core.set_format_fn "$(__log.core.default_format_fn)"
     return 0
   fi
-  __log.core.set_format_fn "__log.core.json_format_fn"
 }
 
 # Set format.format_function to core.format_fn_wrapper

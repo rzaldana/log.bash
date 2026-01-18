@@ -7,13 +7,13 @@ LIBRARY_PATH="$SCRIPT_DIR/../../log.bash"
 # shellcheck source=../../log.bash
 source "$LIBRARY_PATH"
 
-# mock date
-date() {
-  echo "date" 
+# mock jq
+jq() {
+  /usr/local/bin/jq "$@"
 }
 
 log.set_level_debug
-hash -d jq
+hash -d date 
 PATH= log.set_format_json
 
 echo "hello" | log.info

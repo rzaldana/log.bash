@@ -1,4 +1,5 @@
 
+source ./date/date.bash
 source ./json/json.bash
 
 # description: |
@@ -23,5 +24,5 @@ __log.core.utils.get_parent_script_name() {
 
   local -i top_level_index
   top_level_index=$(( funcname_length - 1 ))
-  printf "%s" "$( basename "${BASH_SOURCE[$top_level_index]}" )"
+  printf "%s" "${BASH_SOURCE[$top_level_index]##*/}"
 }

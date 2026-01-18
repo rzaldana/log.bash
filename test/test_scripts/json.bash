@@ -7,6 +7,10 @@ LIBRARY_PATH="$SCRIPT_DIR/../../log.bash"
 # shellcheck source=../../log.bash
 source "$LIBRARY_PATH"
 
+# mock date
+date() {
+  echo "date" 
+}
 
 log.set_level_debug
 log.set_format_json

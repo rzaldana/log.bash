@@ -7,11 +7,7 @@ LIBRARY_PATH="$SCRIPT_DIR/../../log.bash"
 # shellcheck source=../../log.bash
 source "$LIBRARY_PATH"
 
-# mock date
-date() {
-  echo "date" 
-}
-
+export PATH=
 log.set_level_info
 log.info <<<"hello"
 log.warn <<<"bye"

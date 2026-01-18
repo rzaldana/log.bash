@@ -1,0 +1,10 @@
+log.bash: WARNING: 'date' command is not available. Omitting timestamp from logs
+[test_no_date.bash][ INFO]: hello
+[test_no_date.bash][ WARN]: bye
+hello
+bye
+log.bash: WARNING: 'date' command is not available. Omitting timestamp from logs
+[test_no_date.bash][ INFO]: hello
+[test_no_date.bash][ WARN]: bye
+[test_no_date.bash][ERROR]: hello
+[test_no_date.bash][DEBUG]: hi
