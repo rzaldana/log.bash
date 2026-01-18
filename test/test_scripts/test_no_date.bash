@@ -17,7 +17,7 @@ log.info <<<"hello"
 log.warn <<<"bye"
 
 
-log.set_format_bracketed
+log.set_format_space_delimited
 echo "hello" | log.info
 echo "bye" | log.warn
 echo "hello" | log.error

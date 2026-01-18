@@ -1,4 +1,4 @@
 log.bash: WARNING: format was set to json but 'jq' command is not available. Using default format
-[date][json_no_jq.bash][ INFO]: hello
-[date][json_no_jq.bash][DEBUG]: hi
-[date][json_no_jq.bash][ERROR]: no
+date json_no_jq.bash  INFO: hello
+date json_no_jq.bash DEBUG: hi
+date json_no_jq.bash ERROR: no

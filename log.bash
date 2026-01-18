@@ -328,7 +328,7 @@ __log.core.bracketed_format_fn() {
 
   while IFS= read -r line; do
     printf \
-      "[%s][%s][%5s]: %s\n" \
+      "%s %s %5s: %s\n" \
       "$(__log.core.utils.date.timestamp)" \
       "$parent_script_name" \
       "$log_level_name" \
@@ -345,7 +345,7 @@ __log.core.bracketed_format_fn_no_date() {
   parent_script_name="$(__log.core.utils.get_parent_script_name)"
 
   while IFS= read -r line; do
-    printf "[%s][%5s]: %s\n" "$parent_script_name" "$log_level_name" "$line"
+    printf "%s %5s: %s\n" "$parent_script_name" "$log_level_name" "$line"
   done
 }
 
@@ -464,7 +464,7 @@ log.set_format_raw() {
   __log.core.set_format_raw
 }
 
-log.set_format_bracketed() {
+log.set_format_space_delimited() {
   __log.core.set_format_bracketed
 }
 

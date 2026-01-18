@@ -1,9 +1,9 @@
-[date][test.bash][ INFO]: hello
-[date][test.bash][ WARN]: bye
+date test.bash  INFO: hello
+date test.bash  WARN: bye
 hello
 bye
-[date][test.bash][ INFO]: hello
-[date][test.bash][ WARN]: bye
-[date][test.bash][ERROR]: hello
-[date][test.bash][FATAL]: exiting
-[date][test.bash][DEBUG]: hi
+date test.bash  INFO: hello
+date test.bash  WARN: bye
+date test.bash ERROR: hello
+date test.bash FATAL: exiting
+date test.bash DEBUG: hi

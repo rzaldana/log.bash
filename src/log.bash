@@ -49,7 +49,7 @@ log.set_format_raw() {
   __log.core.set_format_raw
 }
 
-log.set_format_bracketed() {
+log.set_format_space_delimited() {
   __log.core.set_format_bracketed
 }
 
