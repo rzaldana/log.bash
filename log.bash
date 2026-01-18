@@ -457,7 +457,7 @@ log.error() {
 }
 
 log.fatal() {
-  __log.core.fatal "FATAL"
+  __log.core.log "FATAL"
 }
 
 log.set_format_raw() {

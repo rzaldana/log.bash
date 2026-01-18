@@ -25,6 +25,7 @@ log.set_format_bracketed
 echo "hello" | log.info
 echo "bye" | log.warn
 echo "hello" | log.error
+echo "exiting" | log.fatal
 
 log.set_level_off
 echo "hello" | log.info
