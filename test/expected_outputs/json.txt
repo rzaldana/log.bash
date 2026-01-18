@@ -1,0 +1,3 @@
+{"parent":"json.bash","level":"INFO","message":"hello"}
+{"parent":"json.bash","level":"DEBUG","message":"hi"}
+{"parent":"json.bash","level":"ERROR","message":"no"}

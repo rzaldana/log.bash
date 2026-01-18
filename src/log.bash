@@ -52,3 +52,7 @@ log.set_format_raw() {
 log.set_format_bracketed() {
   __log.core.set_format_bracketed
 }
+
+log.set_format_json() {
+  __log.core.set_format_json
+}

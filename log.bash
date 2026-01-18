@@ -93,6 +93,43 @@ __log.core.write.write() {
 
 
 ########## START library utils.bash ###########
+
+
+########## START library json.bash ###########
+
+__log.core.format_fn.utils.json.is_jq_installed() {
+  if ! command -v jq >/dev/null 2>&1; then
+    return 1 
+  fi
+}
+
+__log.core.format_fn.utils.json.object.new() {
+  jq \
+    --monochrome-output \
+    --null-input \
+    --compact-output \
+    '{}'
+}
+
+__log.core.format_fn.utils.json.object.add_key_value() {
+  IFS= read -r -d '' object || :
+    local key
+    local value
+    key="$1" 
+    value="$2"
+    jq \
+      --slurp \
+      --monochrome-output \
+      --null-input \
+      --compact-output \
+      --arg key "$key" \
+      --arg value "$value" \
+      --argjson object "$object" \
+      '[$object, { $key: $value }] | add'
+}
+########## END library json.bash ###########
+
+
 # description: |
 #   Returns the name of the script that's currently 
 #   executing, even if the function is called from
@@ -136,6 +173,23 @@ __log.core.format_fn.bracketed_format_fn() {
 
   while IFS= read -r line; do
     printf "[%s][%5s]: %s\n" "$parent_script_name" "$log_level_name" "$line"
+  done
+}
+
+
+__log.core.format_fn.json_format_fn() {
+  local log_level_name
+  log_level_name="$1"
+
+  # get parent script's name
+  local parent_script_name
+  parent_script_name="$(__log.core.format_fn.utils.get_parent_script_name)"
+
+  while IFS= read -r line; do
+    __log.core.format_fn.utils.json.object.new \
+      | __log.core.format_fn.utils.json.object.add_key_value "parent" "$parent_script_name" \
+      | __log.core.format_fn.utils.json.object.add_key_value "level" "$log_level_name" \
+      | __log.core.format_fn.utils.json.object.add_key_value "message" "$line"
   done
 }
 ########## END library format_fn.bash ###########
@@ -289,6 +343,15 @@ __log.core.set_format_raw() {
   __log.core.set_format_fn "__log.core.format_fn.raw_format_fn"
 }
 
+__log.core.set_format_json() {
+  if ! __log.core.format_fn.utils.json.is_jq_installed; then
+    echo "log.bash: WARNING: format was set to json but jq is not available. Using default format" >&2
+    __log.core.set_format_fn "$(__log.core.default_format_fn)"
+    return 0
+  fi
+  __log.core.set_format_fn "__log.core.format_fn.json_format_fn"
+}
+
 # Set format.format_function to core.format_fn.wrapper
 __log.core.format.set_format_function "__log.core.format_fn_wrapper"
 ########## END library core.bash ###########
@@ -344,4 +407,8 @@ log.set_format_raw() {
 
 log.set_format_bracketed() {
   __log.core.set_format_bracketed
+}
+
+log.set_format_json() {
+  __log.core.set_format_json
 }

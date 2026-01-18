@@ -2,11 +2,14 @@ ARG BASH_VERSION=5.2.15
 
 FROM scratch AS bash_unit
 ADD https://github.com/bash-unit/bash_unit.git#v2.3.3 /tmp/bash_unit
+ADD --unpack https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64 /tmp/jq
 
 FROM "bash:$BASH_VERSION-alpine3.18"
 
 RUN  apk add --no-cache diffutils 
 COPY --from=bash_unit /tmp/bash_unit/bash_unit /usr/local/bin/bash_unit
+COPY --chmod=777 --from=bash_unit /tmp/jq /usr/local/bin/jq
+RUN ls -la /usr/local/bin/jq
 
 
 # Add a non-root user with name "$USER"

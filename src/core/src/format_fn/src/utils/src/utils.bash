@@ -1,3 +1,6 @@
+
+source ./json/json.bash
+
 # description: |
 #   Returns the name of the script that's currently 
 #   executing, even if the function is called from

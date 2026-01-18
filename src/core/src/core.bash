@@ -152,5 +152,14 @@ __log.core.set_format_raw() {
   __log.core.set_format_fn "__log.core.format_fn.raw_format_fn"
 }
 
+__log.core.set_format_json() {
+  if ! __log.core.format_fn.utils.json.is_jq_installed; then
+    echo "log.bash: WARNING: format was set to json but jq is not available. Using default format" >&2
+    __log.core.set_format_fn "$(__log.core.default_format_fn)"
+    return 0
+  fi
+  __log.core.set_format_fn "__log.core.format_fn.json_format_fn"
+}
+
 # Set format.format_function to core.format_fn.wrapper
 __log.core.format.set_format_function "__log.core.format_fn_wrapper"
