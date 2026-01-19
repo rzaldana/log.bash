@@ -22,8 +22,16 @@ log.error <<<"Something failed"
 ```
 
 ## Dependencies 
-log.bash has no external dependencies. All functionality is implemented entirely in Bash. The following versions of bash are supported:
+The following versions of bash are supported:
 - 5.2.15
 - 4.0.44
 - 4.4.23
 - 3.2.57
+
+External binaries:
+- `date` for timestamps feature (tested version: BusyBox v1.36.1)
+- `jq` for JSON formatted logging (tested version: 1.8.1)
+
+If `date` is not available in the environment, log.bash emits a warning to stderr and removes timestamps from logs.
+If `jq` is not available and JSON formatting is set, log.bash emits a warning to stderr and falls back to space delimited formatting.
+
