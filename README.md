@@ -21,7 +21,7 @@ log.warn <<<"Low disk space"
 log.error <<<"Something failed"
 ```
 
-## 📦 Dependencies 
+## Dependencies 
 log.bash has no external dependencies. All functionality is implemented entirely in Bash. The following versions of bash are supported:
 - 5.2.15
 - 4.0.44
